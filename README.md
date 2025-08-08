@@ -31,16 +31,11 @@ A small, modular Python project that builds a **dynamic causal graph** of market
 pip install google-generativeai alpaca-py praw vaderSentiment feedparser \
             pandas python-dotenv pyvis networkx pyyaml pandas-market-calendars
 
-cp .env.example .env   # fill in keys (Gemini, Reddit, Alpaca)
-
-# Sanity demo (no market keys needed)
-PYTHONPATH=src python3 runner.py
-PYTHONPATH=src python3 view_graph_pyvis.py --path data/latest_graph.json --out graph.html
-open graph.html
+cp .env.example .env   # fill in keys (Gemini, Reddit, Alpaca)x
 
 # Realtime loop (5-min cadence; holiday-aware RTH inference)
 PYTHONPATH=src python3 realtime.py
-# or once:
+# or just one cycle:
 PYTHONPATH=src python3 realtime.py --once
 ```
 
