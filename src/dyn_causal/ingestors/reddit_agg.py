@@ -52,6 +52,7 @@ class RedditAggregator:
         max_score_refresh_per_cycle: int = 30,
         # viral surge override
         viral_5m_threshold: int = 10,
+        aliases_map: dict | None = None,   # NEW
     ):
         self.reddit = praw.Reddit(
             client_id=os.environ["REDDIT_CLIENT_ID"],
@@ -100,22 +101,28 @@ class RedditAggregator:
     def _score_text(self, text: str) -> float:
         return float(self.sid.polarity_scores(text or "")["compound"])
 
-    def _extract_tickers(self, text: str) -> List[str]:
+    def _extract_tickers(self, text: str):
         hits = set()
-        # ALL CAPS tickers
-        for m in TICKER_RE.findall(text or ""):
+        txt = text or ""
+        low = txt.lower()
+
+        # ALL-CAPS tokens (AAPL)
+        for m in TICKER_RE.findall(txt):
             if m in self.tickers:
                 hits.add(m)
-        # cashtags
-        for m in CASHTAG_RE.findall(text or ""):
+
+        # Cashtags ($AAPL)
+        for m in CASHTAG_RE.findall(txt):
             if m in self.tickers:
                 hits.add(m)
-        # aliases (lowercased matches like "nvidia", "visa")
-        low = (text or "").lower()
+
+        # Aliases / company names / keywords (e.g., "apple", "nvidia", "visa")
         for t, aliases in self.aliases_map.items():
             if any(a in low for a in aliases):
                 hits.add(t)
+
         return list(hits)
+
 
     def _prune_old(self, dq: Deque[dict], now: datetime):
         cut = now - timedelta(minutes=self.buffer_minutes)
