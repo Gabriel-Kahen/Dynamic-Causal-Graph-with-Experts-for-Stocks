@@ -106,10 +106,6 @@ PYTHONPATH=src python3 realtime.py --once
 
 ---
 
-Here’s a short **README** add-on you can paste in.
-
----
-
 ## Rebuilding & Viewing the Graph
 
 ### Rebuild from the event log
