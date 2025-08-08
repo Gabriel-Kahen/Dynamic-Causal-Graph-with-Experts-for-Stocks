@@ -62,7 +62,7 @@ A modular Python project that builds a **dynamic causal graph** of market events
    * When a **new price\_event** lands, aggregate its **incoming active edges** (signed, decayed weights) into a per-ticker belief for the configured **horizon**.
    * Convert to probability & expected σ; if both exceed thresholds (`horizon.min_probability`, `horizon.spread_sigma_k`), emit an **alert** (JSONL) with direction and a one-line LLM rationale.
 
-7. **Market hours control (holiday-aware)**
+7. **Market hours control**
 
    * By default, **debates/edges/alerts** only run during **RTH** (NYSE calendar: holidays & early closes respected).
    * News/Reddit still ingest overnight; they’re **considered at the open** when the first price bars arrive.
@@ -96,20 +96,13 @@ PYTHONPATH=src python3 realtime.py --once
 
 ---
 
-## Minimal config (edit `config.yaml`)
+## Config (edit `config.yaml`)
 
 * **Universe & metadata**: tickers, sector/peers, per-ticker RSS keywords
 * **News feeds**: list of RSS URLs (Reuters/CNBC/FT/AP/WSJ/Yahoo, etc.)
 * **Reddit**: subs, include links, score maturity, viral threshold
-* **RTH**:
+* **RTH**: as explained above
 
-  ```yaml
-  rth:
-    enforce: true
-    require_price_event: true
-  ```
-
-Secrets live in `.env` (keep it out of git). Use the provided `.env.example`.
 
 ---
 
@@ -126,18 +119,5 @@ Secrets live in `.env` (keep it out of git). Use the provided `.env.example`.
 
 * **Koupaee, Mahnaz; Bai, Xueying; Chen, Mudan; Durrett, Greg; Chambers, Nathanael; Balasubramanian, Niranjan.** *Causal Graph based Event Reasoning using Semantic Relation Experts.* arXiv:2506.06910 (2025). DOI: 10.48550/arXiv.2506.06910. ([arXiv][1])
 
-**BibTeX**
-
-```bibtex
-@article{koupaee2025causal,
-  title   = {Causal Graph based Event Reasoning using Semantic Relation Experts},
-  author  = {Koupaee, Mahnaz and Bai, Xueying and Chen, Mudan and Durrett, Greg and Chambers, Nathanael and Balasubramanian, Niranjan},
-  journal = {arXiv preprint arXiv:2506.06910},
-  year    = {2025},
-  doi     = {10.48550/arXiv.2506.06910}
-}
-```
-
-If you want this dropped straight into `README.md`, say the word and I’ll paste a ready-to-commit file.
 
 [1]: https://arxiv.org/abs/2506.06910 "[2506.06910] Causal Graph based Event Reasoning using Semantic Relation Experts"
