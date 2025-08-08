@@ -24,7 +24,6 @@ htmlcov/
 .ruff_cache/
 .cache/
 .env
-.env.*
 .envrc
 data/
 !data/.gitkeep
