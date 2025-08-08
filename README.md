@@ -162,7 +162,7 @@ open graph.html
 * Run `rebuild_from_log.py` first if your snapshot is stale or missing.
 * Big graphs can be heavy in the browser; zoom and drag to explore.
 
---
+---
 
 ## Outputs
 
