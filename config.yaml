@@ -1,0 +1,105 @@
+rth:
+  enforce: true
+  require_price_event: true
+
+debate:
+  max_rounds: 1
+  escalate_gray_band: [0.45, 0.60]
+  summary_token_budget: 150
+  model: gemini-2.5-flash-lite
+
+horizon:
+  minutes: 90
+  spread_sigma_k: 1.0
+  min_probability: 0.65
+
+decay:
+  price_event_days: 1.0
+  news_days: 5.0
+  filing_days: 10.0
+  macro_days: 45.0
+  social_days: 2.0
+
+weights:
+  alpha_blend: 0.7
+  initial_edge_weight: 0.55
+  min_confidence_to_add: 0.5
+
+gating:
+  max_candidate_edges_per_node: 10
+  max_time_lag_minutes: 1440
+  max_bar_lag_minutes: 90
+  allow_cross_ticker_within_sector: true
+  allow_supply_chain_links: true
+  allow_macro_to_sector_or_ticker: true
+
+derived_bars:
+  return_sigma_up: 1.0
+  return_sigma_down: -1.25
+  volume_percentile: 95.0
+  gap_percent: 1.0
+
+alerts:
+  enable_console: true
+  enable_jsonl_sink: true
+  jsonl_path: data/alerts.jsonl
+
+logging:
+  sqlite_path: data/events.sqlite
+  snapshot_json_path: data/snapshots
+
+universe:
+  tickers: ["AAPL","NVDA","MSFT","GOOG","AMZN","META","BRK-B","LLY","AVGO","TSLA","JPM","WMT","UNH","XOM","V"]
+  reference_index: "SPY"
+
+reddit:
+  subreddits: ["wallstreetbets","stocks","investing"]
+  include_links: true
+  max_links_per_node: 10
+  link_selection: recent
+  min_score: 3
+  score_maturity_minutes: 10
+  refresh_scores: true
+  max_score_refresh_per_cycle: 30
+  min_mentions_5m: 3
+  zscore_trigger_30m: 2.0
+  min_abs_sentiment_30m: 0.25
+  viral_5m_threshold: 10
+
+
+universe_meta:
+  AAPL: {name: "Apple", sector: "Information Technology", peers: ["MSFT","GOOG","AMZN","META","AVGO"], rss_keywords: ["Apple","iPhone","Cupertino","AAPL"]}
+  MSFT: {name: "Microsoft", sector: "Information Technology", peers: ["AAPL","GOOG","AMZN","META","NVDA"], rss_keywords: ["Microsoft","Azure","Windows","MSFT"]}
+  GOOG: {name: "Alphabet", sector: "Communication Services", peers: ["AAPL","MSFT","META","AMZN"], rss_keywords: ["Alphabet","Google","YouTube","GOOG"]}
+  AMZN: {name: "Amazon", sector: "Consumer Discretionary", peers: ["AAPL","MSFT","GOOG","WMT"], rss_keywords: ["Amazon","Prime","AWS","AMZN"]}
+  META: {name: "Meta Platforms", sector: "Communication Services", peers: ["AAPL","MSFT","GOOG"], rss_keywords: ["Meta","Facebook","Instagram","WhatsApp","META"]}
+  NVDA: {name: "NVIDIA", sector: "Information Technology", peers: ["MSFT","AVGO"], rss_keywords: ["NVIDIA","Nvidia","CUDA","GeForce","NVDA"]}
+  AVGO: {name: "Broadcom", sector: "Information Technology", peers: ["AAPL","NVDA"], rss_keywords: ["Broadcom","AVGO"]}
+  TSLA: {name: "Tesla", sector: "Consumer Discretionary", peers: [], rss_keywords: ["Tesla","TSLA"]}
+  LLY: {name: "Eli Lilly", sector: "Health Care", peers: ["UNH"], rss_keywords: ["Eli Lilly","LLY","Mounjaro","Zepbound"]}
+  UNH: {name: "UnitedHealth Group", sector: "Health Care", peers: ["LLY"], rss_keywords: ["UnitedHealth","United Health","UNH"]}
+  WMT: {name: "Walmart", sector: "Consumer Staples", peers: ["AMZN"], rss_keywords: ["Walmart","Wal-Mart","WMT"]}
+  JPM: {name: "JPMorgan Chase", sector: "Financials", peers: ["V"], rss_keywords: ["JPMorgan","JP Morgan","JPM"]}
+  V:   {name: "Visa", sector: "Financials", peers: ["JPM"], rss_keywords: ["Visa","V"]}
+  XOM: {name: "Exxon Mobil", sector: "Energy", peers: [], rss_keywords: ["Exxon","Exxon Mobil","XOM"]}
+  BRK-B: {name: "Berkshire Hathaway", sector: "Financials", peers: ["JPM","AAPL"], rss_keywords: ["Berkshire","Berkshire Hathaway","BRK.B","BRK-B"]}
+
+news:
+  feeds:
+    - "https://feeds.reuters.com/reuters/businessNews"
+    - "https://feeds.reuters.com/reuters/technologyNews"
+    - "https://feeds.reuters.com/reuters/USCompanyNews"
+    - "https://www.cnbc.com/id/100003114/device/rss/rss.html"
+    - "https://www.ft.com/rss/home/us"
+    - "https://apnews.com/hub/ap-top-news?utm_source=rss&utm_medium=referral"
+    - "https://feeds.a.dj.com/rss/RSSMarketsMain.xml"
+    - "https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml"
+    - "https://www.marketwatch.com/feeds/topstories"
+    - "https://finance.yahoo.com/news/rssindex"
+
+macro:
+  fred_series: ["CPIAUCSL","UNRATE","FEDFUNDS","PAYEMS","RSAFS","DGORDER"]
+
+budget:
+  daily_usd_cap: 1.00
+  est_usd_per_edge: 0.00050
