@@ -108,8 +108,8 @@ PYTHONPATH=src python3 realtime.py --once
 
 ## Outputs
 
-* `data/latest_graph.json` — graph snapshot for your frontend
-* `graph.html` — quick visualization (PyVis)
+* `data/latest_graph.json` — graph snapshot
+* `graph.html` — quick visualization of graph (PyVis)
 * `data/alerts.jsonl` — alerts with probability/σ/rationale
 * `data/events.sqlite` — append-only audit trail
 
