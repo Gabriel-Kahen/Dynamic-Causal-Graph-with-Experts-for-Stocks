@@ -15,7 +15,7 @@ from ..events import SocialAggregateEvent
 
 UTC = timezone.utc
 TICKER_RE = re.compile(r"\b([A-Z]{1,5})\b")
-
+CASHTAG_RE = re.compile(r"\$([A-Z]{1,5})\b")
 
 class RedditAggregator:
     """
@@ -91,6 +91,9 @@ class RedditAggregator:
         # rolling baseline (EMA) for 30m mentions per (ticker, subreddit)
         self.baseline_ct: Dict[Tuple[str, str], float] = collections.defaultdict(lambda: 1.0)
         self.baseline_var: Dict[Tuple[str, str], float] = collections.defaultdict(lambda: 1.0)
+        
+        self.aliases_map = {k: {s.lower() for s in (v or [])} for k,v in (aliases_map or {}).items()}
+
 
     # ---------- utils ----------
 
@@ -98,7 +101,20 @@ class RedditAggregator:
         return float(self.sid.polarity_scores(text or "")["compound"])
 
     def _extract_tickers(self, text: str) -> List[str]:
-        hits = set(m for m in TICKER_RE.findall(text or "") if m in self.tickers)
+        hits = set()
+        # ALL CAPS tickers
+        for m in TICKER_RE.findall(text or ""):
+            if m in self.tickers:
+                hits.add(m)
+        # cashtags
+        for m in CASHTAG_RE.findall(text or ""):
+            if m in self.tickers:
+                hits.add(m)
+        # aliases (lowercased matches like "nvidia", "visa")
+        low = (text or "").lower()
+        for t, aliases in self.aliases_map.items():
+            if any(a in low for a in aliases):
+                hits.add(t)
         return list(hits)
 
     def _prune_old(self, dq: Deque[dict], now: datetime):

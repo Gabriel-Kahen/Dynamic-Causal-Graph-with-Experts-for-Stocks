@@ -57,18 +57,18 @@ reddit:
   include_links: true
   max_links_per_node: 10
   link_selection: recent
-  min_score: 3
+  min_score: 2
   score_maturity_minutes: 10
   refresh_scores: true
   max_score_refresh_per_cycle: 30
-  min_mentions_5m: 3
+  min_mentions_5m: 2
   zscore_trigger_30m: 2.0
   min_abs_sentiment_30m: 0.25
-  viral_5m_threshold: 10
+  viral_5m_threshold: 8
 
 
 universe_meta:
-  AAPL: {name: "Apple", sector: "Information Technology", peers: ["MSFT","GOOG","AMZN","META","AVGO"], rss_keywords: ["Apple","iPhone","Cupertino","AAPL"]}
+  AAPL: {name: "Apple", sector: "Information Technology", peers: ["MSFT","GOOG","AMZN","META","AVGO"], rss_keywords: ["Apple","iPhone","Cupertino","AAPL", "Mac", "iMac"]}
   MSFT: {name: "Microsoft", sector: "Information Technology", peers: ["AAPL","GOOG","AMZN","META","NVDA"], rss_keywords: ["Microsoft","Azure","Windows","MSFT"]}
   GOOG: {name: "Alphabet", sector: "Communication Services", peers: ["AAPL","MSFT","META","AMZN"], rss_keywords: ["Alphabet","Google","YouTube","GOOG"]}
   AMZN: {name: "Amazon", sector: "Consumer Discretionary", peers: ["AAPL","MSFT","GOOG","WMT"], rss_keywords: ["Amazon","Prime","AWS","AMZN"]}
@@ -96,6 +96,8 @@ news:
     - "https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml"
     - "https://www.marketwatch.com/feeds/topstories"
     - "https://finance.yahoo.com/news/rssindex"
+  lookback_minutes: 60
+  generate_symbol_feeds: true
 
 macro:
   fred_series: ["CPIAUCSL","UNRATE","FEDFUNDS","PAYEMS","RSAFS","DGORDER"]

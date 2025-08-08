@@ -2,20 +2,19 @@ from __future__ import annotations
 from typing import Dict, List
 from .rss import RSSIngestor
 
-def build_news_ingestors_from_cfg(cfg) -> list:
-    ticker_map: Dict[str, list] = {}
-    for t in cfg.universe.tickers:
-        meta = (cfg.universe_meta or {}).get(t, {})
-        kws = meta.get("rss_keywords") or [meta.get("name") or t]
-        if isinstance(kws, str):
-            kws = [kws]
-        if t not in kws:
-            kws.append(t)
-        # dedupe keeping order
-        seen = set(); final = []
-        for k in kws:
-            if k and k not in seen:
-                seen.add(k); final.append(k)
-        ticker_map[t] = final
-    feeds = (cfg.news or {}).get("feeds", [])
-    return [RSSIngestor(url=f, ticker_map=ticker_map) for f in feeds]
+def build_news_ingestors_from_cfg(cfg):
+    feeds = list(cfg.news.get("feeds", []) or [])
+    if cfg.news.get("generate_symbol_feeds", True):
+        # Yahoo Finance per-symbol RSS (surprisingly decent coverage)
+        for t in cfg.universe.tickers:
+            feeds.append(f"https://feeds.finance.yahoo.com/rss/2.0/headline?s={t}&region=US&lang=en-US")
+    ingestors = []
+    for url in feeds:
+        ingestors.append(RSSIngestor(
+            feed_url=url,
+            tickers=cfg.universe.tickers,
+            meta=cfg.universe_meta,
+            lookback_minutes=int(cfg.news.get("lookback_minutes", 30))
+        ))
+    return ingestors
+

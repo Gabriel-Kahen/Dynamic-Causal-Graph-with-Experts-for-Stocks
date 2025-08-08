@@ -106,6 +106,68 @@ PYTHONPATH=src python3 realtime.py --once
 
 ---
 
+Here’s a short **README** add-on you can paste in.
+
+---
+
+## Rebuilding & Viewing the Graph
+
+### Rebuild from the event log
+
+Use `rebuild_from_log.py` to reconstruct `latest_graph.json` from `data/events.sqlite` without calling any APIs or the LLM (it just replays logged mutations).
+
+**Common uses**
+
+* Recover the latest graph after a crash.
+* Build a snapshot for a specific time range (e.g., today’s RTH).
+
+**Commands**
+
+```bash
+# Full replay → snapshot
+PYTHONPATH=src python3 rebuild_from_log.py \
+  --db data/events.sqlite \
+  --out data/latest_graph.json
+
+# Time-bounded replay (UTC ISO timestamps)
+PYTHONPATH=src python3 rebuild_from_log.py \
+  --db data/events.sqlite \
+  --since 2025-08-08T13:30:00Z \
+  --until 2025-08-08T20:00:00Z \
+  --out data/latest_graph.json
+```
+
+**Notes**
+
+* Replays only graph mutations (`add_node`, `add_edge`, `prune_*`).
+* **Does not** re-run debates/inference or hit external services.
+* Output: `data/latest_graph.json` (ready for the viewer/frontend).
+
+---
+
+### View the graph (HTML)
+
+Use `view_graph_pyvis.py` to render a snapshot to an interactive HTML file.
+
+**Commands**
+
+```bash
+# Render the latest snapshot to HTML
+PYTHONPATH=src python3 view_graph_pyvis.py \
+  --path data/latest_graph.json \
+  --out graph.html
+
+# Open it (macOS)
+open graph.html
+```
+
+**Tips**
+
+* Run `rebuild_from_log.py` first if your snapshot is stale or missing.
+* Big graphs can be heavy in the browser; zoom and drag to explore.
+
+--
+
 ## Outputs
 
 * `data/latest_graph.json` — graph snapshot

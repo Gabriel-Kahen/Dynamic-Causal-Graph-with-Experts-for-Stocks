@@ -47,6 +47,10 @@ def build_reddit(cfg):
         return None
 
     rcfg = cfg.reddit
+    aliases_map = {t: (cfg.universe_meta.get(t, {}).get("rss_keywords", []) +
+                   [cfg.universe_meta.get(t, {}).get("name","")]) for t in cfg.universe.tickers}
+
+    
     return RedditAggregator(
         subreddits=rcfg.subreddits,
         tickers=cfg.universe.tickers,
@@ -66,6 +70,7 @@ def build_reddit(cfg):
         viral_5m_threshold=getattr(rcfg, "viral_5m_threshold", 10),
         # rolling buffer
         buffer_minutes=120,
+        aliases_map = aliases_map
     )
 
 
